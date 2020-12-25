@@ -1,21 +1,22 @@
 <template>
   <div class="top">
     <div class="top-wrapper">
-      <!-- {{ formData }} -->
-      <div class="top-title" @click="transHome">Web App Sample</div>
+      <!-- {{formData}} -->
+      <div class="top-title">Web App Sample</div>
       <div class="tab-wrapper">
         <tab-component
           :list="tabList"
           :selected="selectedTab"
-          @clcik-event="selectTab"
+          @click-event="selectTab"
         />
       </div>
       <login-form
         v-for="item in tabList"
         :key="item.id"
         v-show="selectedTab === item.id"
-        :formData="formData"
+        :formData="formData[item.id - 1]"
         :itemData="item"
+        :selectedTab="selectedTab"
         @change-value="changeValue"
         @sign-up="signUp"
         @sign-in="signIn"
@@ -24,12 +25,11 @@
   </div>
 </template>
 
-<script>
-import LoginForm from "@/components/organisms/LoginForm.vue";
+<script lang="ts">
+import { defineComponent } from "vue";
 import TabComponent from "@/components/modecules/TabComponent.vue";
-
-import firebase from 'firebase'
-export default {
+import LoginForm from "@/components/organisms/LoginForm.vue";
+export default defineComponent({
   name: "Top",
   components: {
     TabComponent,
@@ -37,7 +37,6 @@ export default {
   },
   data() {
     return {
-      selectedTab: 1,
       tabList: [
         {
           id: 1,
@@ -50,68 +49,104 @@ export default {
         },
       ],
       formData: [
-        {
-          id: 1,
-          label: "ID",
-          keyName: "id",
-          value: "",
-          formType: "TextField",
-        },
-        {
-          id: 2,
-          label: "パスワード",
-          keyName: "password",
-          value: "",
-          formType: "PassField",
-        },
+        [
+          {
+            id: 1,
+            label: "ID",
+            keyName: "id",
+            value: "",
+            formType: "TextField",
+          },
+          {
+            id: 2,
+            label: "パスワード",
+            keyName: "password",
+            value: "",
+            formType: "PassField",
+          },
+        ],
+        [
+          {
+            id: 1,
+            label: "ID",
+            keyName: "id",
+            value: "",
+            formType: "TextField",
+          },
+          {
+            id: 2,
+            label: "パスワード",
+            keyName: "password",
+            value: "",
+            formType: "PassField",
+          },
+        ],
       ],
     };
   },
-  created() {
-    console.log(firebase.auth());
+  computed: {
+    selectedTab(): number {
+      return (this as any).$store.state.common.selectedTab;
+    },
+    authState(): number {
+      return (this as any).$store.state.auth.state;
+    },
   },
   methods: {
-    transHome() {
-      this.$router.push("/home");
-      //router-linkと動きは同じ htmlかjavascriptか
-      //pushをreplaceに変えてみてね
+    transHome(): void {
+      if (this.authState) {
+        (this as any).$router.replace("/home");
+      }
     },
-    changeValue(key, value) {
-      this.formData[key - 1].value = value;
+    changeValue(formNumber: number, key: number, value: number): void {
+      (this as any).formData[formNumber - 1][key - 1].value = value;
     },
-    selectTab(id) {
-      return (this.selectedTab = id);
+    selectTab(id: number): void {
+      (this as any).$store.commit("common/setSelectedTab", id);
     },
-    signUp() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(
-          this.formData[1][0].value,
-          this.formData[1][1].value
-        )
-        .then((user) => {
-          console.log(user);
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
+    signUp(): void {
+      (this as any).$store.dispatch("auth/signUp", {
+        id: (this as any).formData[1][0].value,
+        password: (this as any).formData[1][1].value,
+      });
+
+      // firebase
+      //   .auth()
+      //   .createUserWithEmailAndPassword(
+      //     (this as any).formData[1][0].value,
+      //     (this as any).formData[1][1].value
+      //   )
+      //   .then((user) => {
+      //     console.log(user);
+      //   })
+      //   .catch((error) => {
+      //     alert(error.message);
+      //   });
     },
-    signIn() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(
-          this.formData[0][0].value,
-          this.formData[0][1].value
-        )
-        .then(() => {
-          firebase.auth().currentUser
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
+    signIn(): void {
+      // console.log(2);
+      (this as any).$store.dispatch("auth/signIn", {
+        id: (this as any).formData[0][0].value,
+        password: (this as any).formData[0][1].value,
+      });
+      this.transHome();
+      // firebase
+      //   .auth()
+      //   .signInWithEmailAndPassword(
+      //     (this as any).formData[0][0].value,
+      //     (this as any).formData[0][1].value
+      //   )
+      //   .then(() => {
+      //     firebase
+      //       .auth()
+      //       .setPersistence(firebase.auth.Auth.Persistence.SESSION);
+      //   })
+      //   .catch((error) => {
+      //     alert(error.message);
+      //   });
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

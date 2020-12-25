@@ -8,9 +8,11 @@ export default {
   props: {
     label: String,
   },
-  methods:{
-    
-  }
+  methods: {
+    clickEvent() {
+      this.$emit("click-event");
+    },
+  },
 };
 </script>
 

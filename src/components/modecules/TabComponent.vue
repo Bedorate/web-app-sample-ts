@@ -4,7 +4,7 @@
       class="tab"
       v-for="tab in list"
       :key="tab.id"
-      :class="selected === tab.id ? 'selected' : ''"
+      :class="setClassSelected(tab.id)"
       @click="clickEvent(tab.id)"
     >
       {{ tab.label }}
@@ -19,9 +19,17 @@ export default {
     list: Array,
     selected: Number,
   },
+  computed:{
+    setClassSelected(){
+      const selected = this.selected;
+      return function(id){
+        return selected === id ? "selected" :"";
+      }
+    },
+  },
   methods: {
     clickEvent(id) {
-      this.$emit("clcik-event", id);
+      this.$emit("click-event", id);
     },
   },
 };

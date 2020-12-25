@@ -4,6 +4,7 @@
       v-for="(form, index) in formData"
       :key="index"
       :form="form"
+      :formNumber="itemData.id"
       @change-value="changeValue"
     />
     <div class="login-form-footer">
@@ -19,9 +20,7 @@
 
 <script>
 import CommonButton from "@/components/atoms/CommonButton.vue";
-
 import FormComponent from "@/components/modecules/FormComponent.vue";
-
 export default {
   name: "LoginForm",
   components: {
@@ -31,15 +30,16 @@ export default {
   props: {
     formData: Array,
     itemData: Object,
+    selectedTab: Number,
   },
   methods: {
-    changeValue(key, value) {
-      this.$emit("change-value", key, value);
+    changeValue(formNumber, key, value) {
+      this.$emit("change-value", formNumber, key, value);
     },
     authEvent() {
-      if(this.$selectTab === 1){
+      if (this.selectedTab === 1) {
         this.$emit("sign-in");
-      } else {
+      } else if (this.selectedTab === 2) {
         this.$emit("sign-up");
       }
     },
@@ -52,8 +52,9 @@ export default {
   width: 100%;
   &-footer {
     width: 100%;
-    height: 40px;
+    height: 52px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 16px;
     .password-resend-label {

@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "dom": "0.0.3",
     "firebase": "^8.0.1",
+    "firebase-tools": "^9.1.0",
     "node-sass": "^5.0.0",
     "sass-loader": "^10.0.5",
     "vue": "^3.0.0",

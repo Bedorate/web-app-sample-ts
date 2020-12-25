@@ -1,14 +1,14 @@
 <template>
-  <div class="text-field">
-    <input type="text" v-model="innerValue" />
+  <div class="number-field">
+    <input type="number" v-model="innerValue" />
   </div>
 </template>
 
 <script>
 export default {
-  name: "TextField",
+  name: "NumberField",
   props: {
-    value: String,
+    value: Number,
     id: Number,
     formNumber: Number,
   },
@@ -18,7 +18,7 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit("change-value", this.formNumber, this.id, value);
+        this.$emit("change-value", this.formNumber, this.id, Number(value));
       },
     },
   },
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.text-field {
+.number-field {
   width: 100%;
   position: relative;
   height: 24px;
@@ -40,7 +40,7 @@ export default {
     position: absolute;
     border-left: 1px solid black;
   }
-  &:after {
+  &::after {
     width: 100%;
     height: 8px;
     right: 0;
@@ -50,13 +50,13 @@ export default {
     position: absolute;
     border-right: 1px solid black;
   }
-}
-input[type="text"] {
-  width: 100%;
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  padding: 0px 8px;
-  height: 23px;
+  input[type="number"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    padding: 0px 8px;
+    height: 23px;
+  }
 }
 </style>
